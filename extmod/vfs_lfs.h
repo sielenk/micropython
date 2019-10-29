@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2013, 2014 Damien P. George
+ * Copyright (c) 2019 Damien P. George
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef MICROPY_INCLUDED_EXTMOD_VFS_FAT_H
-#define MICROPY_INCLUDED_EXTMOD_VFS_FAT_H
+#ifndef MICROPY_INCLUDED_EXTMOD_VFS_LFS_H
+#define MICROPY_INCLUDED_EXTMOD_VFS_LFS_H
 
 #include "py/obj.h"
-#include "lib/oofatfs/ff.h"
-#include "extmod/vfs.h"
 
-typedef struct _fs_user_mount_t {
-    mp_obj_base_t base;
-    mp_vfs_blockdev_t blockdev;
-    FATFS fatfs;
-} fs_user_mount_t;
+extern const mp_obj_type_t mp_type_vfs_lfs1;
+extern const mp_obj_type_t mp_type_vfs_lfs1_fileio;
+extern const mp_obj_type_t mp_type_vfs_lfs1_textio;
 
-extern const byte fresult_to_errno_table[20];
-extern const mp_obj_type_t mp_fat_vfs_type;
-extern const mp_obj_type_t mp_type_vfs_fat_fileio;
-extern const mp_obj_type_t mp_type_vfs_fat_textio;
+extern const mp_obj_type_t mp_type_vfs_lfs2;
+extern const mp_obj_type_t mp_type_vfs_lfs2_fileio;
+extern const mp_obj_type_t mp_type_vfs_lfs2_textio;
 
-MP_DECLARE_CONST_FUN_OBJ_3(fat_vfs_open_obj);
-
-#endif // MICROPY_INCLUDED_EXTMOD_VFS_FAT_H
+#endif // MICROPY_INCLUDED_EXTMOD_VFS_LFS_H

@@ -65,6 +65,10 @@
 #define MP_BLUETOOTH_CHARACTERISTIC_FLAG_WRITE    (1 << 3)
 #define MP_BLUETOOTH_CHARACTERISTIC_FLAG_NOTIFY   (1 << 4)
 
+// For mp_bluetooth_gattc_write, the mode parameter
+#define MP_BLUETOOTH_WRITE_MODE_NO_RESPONSE     (0)
+#define MP_BLUETOOTH_WRITE_MODE_WITH_RESPONSE   (1)
+
 // Type value also doubles as length.
 #define MP_BLUETOOTH_UUID_TYPE_16  (2)
 #define MP_BLUETOOTH_UUID_TYPE_32  (4)
@@ -176,7 +180,7 @@ int mp_bluetooth_gatts_register_service_begin(bool append);
 // The value_handles won't be valid until after mp_bluetooth_register_service_end is called.
 int mp_bluetooth_gatts_register_service(mp_obj_bluetooth_uuid_t *service_uuid, mp_obj_bluetooth_uuid_t **characteristic_uuids, uint8_t *characteristic_flags, mp_obj_bluetooth_uuid_t **descriptor_uuids, uint8_t *descriptor_flags, uint8_t *num_descriptors, uint16_t *handles, size_t num_characteristics);
 // Register any queued services.
-int mp_bluetooth_gatts_register_service_end();
+int mp_bluetooth_gatts_register_service_end(void);
 
 // Read the value from the local gatts db (likely this has been written by a central).
 int mp_bluetooth_gatts_read(uint16_t value_handle, uint8_t **value, size_t *value_len);
@@ -219,7 +223,7 @@ int mp_bluetooth_gattc_discover_descriptors(uint16_t conn_handle, uint16_t start
 int mp_bluetooth_gattc_read(uint16_t conn_handle, uint16_t value_handle);
 
 // Write the value to the remote peripheral.
-int mp_bluetooth_gattc_write(uint16_t conn_handle, uint16_t value_handle, const uint8_t *value, size_t *value_len);
+int mp_bluetooth_gattc_write(uint16_t conn_handle, uint16_t value_handle, const uint8_t *value, size_t *value_len, unsigned int mode);
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

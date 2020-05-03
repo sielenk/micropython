@@ -26,6 +26,8 @@
 #ifndef MICROPY_INCLUDED_PY_OBJ_H
 #define MICROPY_INCLUDED_PY_OBJ_H
 
+#include <assert.h>
+
 #include "py/mpconfig.h"
 #include "py/misc.h"
 #include "py/qstr.h"
@@ -423,6 +425,7 @@ typedef enum _mp_map_lookup_kind_t {
 extern const mp_map_t mp_const_empty_map;
 
 static inline bool mp_map_slot_is_filled(const mp_map_t *map, size_t pos) {
+    assert(pos < map->alloc);
     return (map)->table[pos].key != MP_OBJ_NULL && (map)->table[pos].key != MP_OBJ_SENTINEL;
 }
 
@@ -650,7 +653,6 @@ extern const mp_obj_type_t mp_type_MemoryError;
 extern const mp_obj_type_t mp_type_NameError;
 extern const mp_obj_type_t mp_type_NotImplementedError;
 extern const mp_obj_type_t mp_type_OSError;
-extern const mp_obj_type_t mp_type_TimeoutError;
 extern const mp_obj_type_t mp_type_OverflowError;
 extern const mp_obj_type_t mp_type_RuntimeError;
 extern const mp_obj_type_t mp_type_StopAsyncIteration;
@@ -731,10 +733,10 @@ mp_obj_t mp_obj_new_complex(mp_float_t real, mp_float_t imag);
 mp_obj_t mp_obj_new_exception(const mp_obj_type_t *exc_type);
 mp_obj_t mp_obj_new_exception_arg1(const mp_obj_type_t *exc_type, mp_obj_t arg);
 mp_obj_t mp_obj_new_exception_args(const mp_obj_type_t *exc_type, size_t n_args, const mp_obj_t *args);
-mp_obj_t mp_obj_new_exception_msg(const mp_obj_type_t *exc_type, const char *msg);
-mp_obj_t mp_obj_new_exception_msg_varg(const mp_obj_type_t *exc_type, const char *fmt, ...); // counts args by number of % symbols in fmt, excluding %%; can only handle void* sizes (ie no float/double!)
+mp_obj_t mp_obj_new_exception_msg(const mp_obj_type_t *exc_type, mp_rom_error_text_t msg);
+mp_obj_t mp_obj_new_exception_msg_varg(const mp_obj_type_t *exc_type, mp_rom_error_text_t fmt, ...); // counts args by number of % symbols in fmt, excluding %%; can only handle void* sizes (ie no float/double!)
 #ifdef va_start
-mp_obj_t mp_obj_new_exception_msg_vlist(const mp_obj_type_t *exc_type, const char *fmt, va_list arg); // same fmt restrictions as above
+mp_obj_t mp_obj_new_exception_msg_vlist(const mp_obj_type_t *exc_type, mp_rom_error_text_t fmt, va_list arg); // same fmt restrictions as above
 #endif
 mp_obj_t mp_obj_new_fun_bc(mp_obj_t def_args, mp_obj_t def_kw_args, const byte *code, const mp_uint_t *const_table);
 mp_obj_t mp_obj_new_fun_native(mp_obj_t def_args_in, mp_obj_t def_kw_args, const void *fun_data, const mp_uint_t *const_table);
@@ -821,6 +823,39 @@ void mp_str_print_quoted(const mp_print_t *print, const byte *str_data, size_t s
 
 #if MICROPY_PY_BUILTINS_FLOAT
 // float
+#if MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_FLOAT
+static inline float mp_obj_get_float_to_f(mp_obj_t o) {
+    return mp_obj_get_float(o);
+}
+
+static inline double mp_obj_get_float_to_d(mp_obj_t o) {
+    return (double)mp_obj_get_float(o);
+}
+
+static inline mp_obj_t mp_obj_new_float_from_f(float o) {
+    return mp_obj_new_float(o);
+}
+
+static inline mp_obj_t mp_obj_new_float_from_d(double o) {
+    return mp_obj_new_float((mp_float_t)o);
+}
+#elif MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_DOUBLE
+static inline float mp_obj_get_float_to_f(mp_obj_t o) {
+    return (float)mp_obj_get_float(o);
+}
+
+static inline double mp_obj_get_float_to_d(mp_obj_t o) {
+    return mp_obj_get_float(o);
+}
+
+static inline mp_obj_t mp_obj_new_float_from_f(float o) {
+    return mp_obj_new_float((mp_float_t)o);
+}
+
+static inline mp_obj_t mp_obj_new_float_from_d(double o) {
+    return mp_obj_new_float(o);
+}
+#endif
 #if MICROPY_FLOAT_HIGH_QUALITY_HASH
 mp_int_t mp_float_hash(mp_float_t val);
 #else

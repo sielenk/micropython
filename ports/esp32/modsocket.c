@@ -457,7 +457,7 @@ STATIC mp_obj_t socket_settimeout(const mp_obj_t arg0, const mp_obj_t arg1) {
         _socket_settimeout(self, UINT64_MAX);
     } else {
         #if MICROPY_PY_BUILTINS_FLOAT
-        _socket_settimeout(self, mp_obj_get_float(arg1) * 1000L);
+        _socket_settimeout(self, (uint64_t)(mp_obj_get_float(arg1) * MICROPY_FLOAT_CONST(1000.0)));
         #else
         _socket_settimeout(self, mp_obj_get_int(arg1) * 1000);
         #endif
@@ -676,6 +676,9 @@ STATIC mp_uint_t socket_stream_write(mp_obj_t self_in, const void *buf, mp_uint_
 STATIC mp_uint_t socket_stream_ioctl(mp_obj_t self_in, mp_uint_t request, uintptr_t arg, int *errcode) {
     socket_obj_t *socket = self_in;
     if (request == MP_STREAM_POLL) {
+        if (socket->fd == -1) {
+            return MP_STREAM_POLL_NVAL;
+        }
 
         fd_set rfds;
         FD_ZERO(&rfds);

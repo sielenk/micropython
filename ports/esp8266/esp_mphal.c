@@ -44,7 +44,7 @@ const mp_print_t mp_debug_print = {NULL, mp_hal_debug_tx_strn_cooked};
 int uart_attached_to_dupterm;
 
 void mp_hal_init(void) {
-    //ets_wdt_disable(); // it's a pain while developing
+    // ets_wdt_disable(); // it's a pain while developing
     mp_hal_rtc_init();
     uart_init(UART_BIT_RATE_115200, UART_BIT_RATE_115200);
     uart_attached_to_dupterm = 0;
@@ -149,7 +149,7 @@ void ets_event_poll(void) {
 
 void __assert_func(const char *file, int line, const char *func, const char *expr) {
     printf("assert:%s:%d:%s: %s\n", file, line, func, expr);
-    mp_raise_msg(&mp_type_AssertionError, "C-level assert");
+    mp_raise_msg(&mp_type_AssertionError, MP_ERROR_TEXT("C-level assert"));
 }
 
 void mp_hal_signal_input(void) {
@@ -205,9 +205,4 @@ int ets_esf_free_bufs(int idx) {
         cnt++;
     }
     return cnt;
-}
-
-extern int mp_stream_errno;
-int *__errno() {
-    return &mp_stream_errno;
 }

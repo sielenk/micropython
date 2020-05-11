@@ -48,6 +48,8 @@ Configuration
     - ``'mac'``: Returns the device MAC address. If a device has a fixed address
       (e.g. PYBD) then it will be returned. Otherwise (e.g. ESP32) a random
       address will be generated when the BLE interface is made active.
+      Note: on some ports, accessing this value requires that the interface is
+      active (so that the MAC address can be queried from the controller).
 
     - ``'rxbuf'``: Get/set the size in bytes of the internal buffer used to store
       incoming events.  This buffer is global to the entire BLE driver and so
@@ -68,7 +70,8 @@ Event Handling
     The optional *trigger* parameter allows you to set a mask of events that
     your program is interested in. The default is all events.
 
-    Note: the ``addr``, ``adv_data`` and ``uuid`` entries in the tuples are
+    Note: the ``addr``, ``adv_data``, ``char_data``, ``notify_data``, and
+    ``uuid`` entries in the tuples are
     references to data managed by the :mod:`ubluetooth` module (i.e. the same
     instance will be re-used across multiple calls to the event handler). If
     your program wants to use this data outside of the handler, then it must
@@ -93,7 +96,7 @@ Event Handling
                 conn_handle, attr_handle = data
             elif event == _IRQ_SCAN_RESULT:
                 # A single scan result.
-                addr_type, addr, connectable, rssi, adv_data = data
+                addr_type, addr, adv_type, rssi, adv_data = data
             elif event == _IRQ_SCAN_COMPLETE:
                 # Scan duration finished or manually stopped.
                 pass
@@ -185,7 +188,15 @@ Observer Role (Scanner)
     interval and window are 1.28 seconds and 11.25 milliseconds respectively
     (background scanning).
 
-    For each scan result, the ``_IRQ_SCAN_RESULT`` event will be raised.
+    For each scan result the ``_IRQ_SCAN_RESULT`` event will be raised, with event
+    data ``(addr_type, addr, adv_type, rssi, adv_data)``.  ``adv_type`` values correspond
+    to the Bluetooth Specification:
+
+        * 0x00 - ADV_IND - connectable and scannable undirected advertising
+        * 0x01 - ADV_DIRECT_IND - connectable directed advertising
+        * 0x02 - ADV_SCAN_IND - scannable undirected advertising
+        * 0x03 - ADV_NONCONN_IND - non-connectable undirected advertising
+        * 0x04 - SCAN_RSP - scan response
 
     When scanning is stopped (either due to the duration finishing or when
     explicitly stopped), the ``_IRQ_SCAN_COMPLETE`` event will be raised.

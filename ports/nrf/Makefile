@@ -38,6 +38,9 @@ endif
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h $(BUILD)/pins_qstr.h
 
+# MicroPython feature configurations
+MICROPY_ROM_TEXT_COMPRESSION ?= 1
+
 # include py core make definitions
 include ../../py/py.mk
 
@@ -150,6 +153,7 @@ SRC_LIB += $(addprefix lib/,\
         libm/asinfacosf.c \
         libm/atanf.c \
         libm/atan2f.c \
+        libm/roundf.c \
 	)
 
 endif

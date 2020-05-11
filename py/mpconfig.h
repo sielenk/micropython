@@ -729,7 +729,7 @@ typedef double mp_float_t;
 
 // Whether to support module-level __getattr__ (see PEP 562)
 #ifndef MICROPY_MODULE_GETATTR
-#define MICROPY_MODULE_GETATTR (0)
+#define MICROPY_MODULE_GETATTR (1)
 #endif
 
 // Whether module weak links are supported
@@ -959,11 +959,6 @@ typedef double mp_float_t;
 #define MICROPY_PY_BUILTINS_ROUND_INT (0)
 #endif
 
-// Whether to support timeout exceptions (like socket.timeout)
-#ifndef MICROPY_PY_BUILTINS_TIMEOUTERROR
-#define MICROPY_PY_BUILTINS_TIMEOUTERROR (0)
-#endif
-
 // Whether to support complete set of special methods for user
 // classes, or only the most used ones. "Inplace" methods are
 // controlled by MICROPY_PY_ALL_INPLACE_SPECIAL_METHODS below.
@@ -1067,6 +1062,11 @@ typedef double mp_float_t;
 // Whether to provide "micropython.stack_use" function
 #ifndef MICROPY_PY_MICROPYTHON_STACK_USE
 #define MICROPY_PY_MICROPYTHON_STACK_USE (MICROPY_PY_MICROPYTHON_MEM_INFO)
+#endif
+
+// Whether to provide the "micropython.heap_locked" function
+#ifndef MICROPY_PY_MICROPYTHON_HEAP_LOCKED
+#define MICROPY_PY_MICROPYTHON_HEAP_LOCKED (0)
 #endif
 
 // Whether to provide "array" module. Note that large chunk of the
@@ -1286,6 +1286,10 @@ typedef double mp_float_t;
 
 // Extended modules
 
+#ifndef MICROPY_PY_UASYNCIO
+#define MICROPY_PY_UASYNCIO (0)
+#endif
+
 #ifndef MICROPY_PY_UCTYPES
 #define MICROPY_PY_UCTYPES (0)
 #endif
@@ -1445,6 +1449,10 @@ typedef double mp_float_t;
 #define MICROPY_WRAP_MP_KEYBOARD_INTERRUPT(f) f
 #endif
 
+#ifndef MICROPY_WRAP_MP_SCHED_SCHEDULE
+#define MICROPY_WRAP_MP_SCHED_SCHEDULE(f) f
+#endif
+
 /*****************************************************************************/
 /* Miscellaneous settings                                                    */
 
@@ -1552,7 +1560,7 @@ typedef double mp_float_t;
 #define UINT_FMT "%u"
 #define INT_FMT "%d"
 #endif
-#endif //INT_FMT
+#endif // INT_FMT
 
 // Modifier for function which doesn't return
 #ifndef NORETURN
@@ -1595,7 +1603,7 @@ typedef double mp_float_t;
 
 #ifndef MP_HTOBE16
 #if MP_ENDIANNESS_LITTLE
-#define MP_HTOBE16(x) ((uint16_t)( (((x) & 0xff) << 8) | (((x) >> 8) & 0xff) ))
+#define MP_HTOBE16(x) ((uint16_t)((((x) & 0xff) << 8) | (((x) >> 8) & 0xff)))
 #define MP_BE16TOH(x) MP_HTOBE16(x)
 #else
 #define MP_HTOBE16(x) (x)
@@ -1605,7 +1613,7 @@ typedef double mp_float_t;
 
 #ifndef MP_HTOBE32
 #if MP_ENDIANNESS_LITTLE
-#define MP_HTOBE32(x) ((uint32_t)( (((x) & 0xff) << 24) | (((x) & 0xff00) << 8) | (((x) >> 8) & 0xff00) | (((x) >> 24) & 0xff) ))
+#define MP_HTOBE32(x) ((uint32_t)((((x) & 0xff) << 24) | (((x) & 0xff00) << 8) | (((x) >> 8) & 0xff00) | (((x) >> 24) & 0xff)))
 #define MP_BE32TOH(x) MP_HTOBE32(x)
 #else
 #define MP_HTOBE32(x) (x)

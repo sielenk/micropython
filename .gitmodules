@@ -39,3 +39,9 @@
 [submodule "ports/stm32/boards/HY-STM32F4xxCore144"]
 	path = ports/stm32/boards/HY-STM32F4xxCore144
 	url = https://github.com/sielenk/mipy_HY_STM32F4xxCore144.git
+[submodule "lib/libhydrogen"]
+	path = lib/libhydrogen
+	url = https://github.com/jedisct1/libhydrogen.git
+[submodule "lib/pico-sdk"]
+	path = lib/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git

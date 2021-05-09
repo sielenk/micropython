@@ -46,11 +46,9 @@
 #define MICROPY_LONGINT_IMPL                (MICROPY_LONGINT_IMPL_MPZ)
 #define MICROPY_ENABLE_SOURCE_LINE          (1)
 #define MICROPY_ERROR_REPORTING             (MICROPY_ERROR_REPORTING_TERSE)
-#define MICROPY_CPYTHON_COMPAT              (0)
 #define MICROPY_CAN_OVERRIDE_BUILTINS       (1)
 
 // Control over Python builtins
-#define MICROPY_PY_ASYNC_AWAIT              (0)
 #define MICROPY_PY_BUILTINS_STR_COUNT       (0)
 #define MICROPY_PY_BUILTINS_MEMORYVIEW      (1)
 #define MICROPY_PY_BUILTINS_SET             (1)
@@ -63,7 +61,6 @@
 #define MICROPY_PY___FILE__                 (0)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO     (1)
 #define MICROPY_PY_ARRAY_SLICE_ASSIGN       (1)
-#define MICROPY_PY_ATTRTUPLE                (0)
 #define MICROPY_PY_COLLECTIONS              (0)
 #define MICROPY_PY_SYS_MAXSIZE              (1)
 
@@ -94,7 +91,7 @@ extern const struct _mp_obj_module_t mp_module_utime;
     do { \
         extern void mp_handle_pending(bool); \
         mp_handle_pending(true); \
-        __WFI(); \
+        __WFE(); \
     } while (0);
 
 #define MICROPY_MAKE_POINTER_CALLABLE(p) ((void *)((mp_uint_t)(p) | 1))
